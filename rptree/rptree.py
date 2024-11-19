@@ -4,6 +4,7 @@
 
 import os
 import pathlib
+import sys
 
 # Constants for tree drawing
 PIPE = "|"
@@ -14,14 +15,21 @@ SPACE_PREFIX = "    "
 
 class DirectoryTree:
     # Initialize the class w/ root_dir passed to it
-    def __init__(self, root_dir, dir_only=False):
+    def __init__(self, root_dir, dir_only=False, output_file=sys):
+        self._output_file = output_file
         self._generator = _TreeGenerator(root_dir, dir_only)
         
     # call the build_tree method of the generator from '_TreeGenerator' class
     def generate(self):
         tree = self._generator.build_tree()
-        for entry in tree:
-            print(entry)
+        if self._output_file != sys.stdout:
+            # wrap tree in markdown code block
+            tree.insert(0, "```")
+            tree.append("```")
+            self._output_file = open(self._output_file, "w", encoding="utf-8")
+        with self._output_file as stream:
+            for entry in tree:
+                print(entry, file=stream)
         
 # _TreeGenerator class -> builds the tree structure
 class _TreeGenerator:
