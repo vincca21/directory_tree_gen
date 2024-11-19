@@ -53,14 +53,17 @@ class _TreeGenerator:
             else:
                 self._add_file(entry, prefix, connector) # add the file to the tree
     
+    # Add the directory to the tree - (note: directory goes to 'dir' in "tree_body" method, bad naming)
     def _add_directory(self, directory, index, entries_count, prefix, connector):
-        self._tree.append(f"{prefix}{connector} {directory.name}{os.sep}")
+        self._tree.append(f"{prefix}{connector} {directory.name}{os.sep}") # append the directory to the tree
+        # set the prefix for the next level of the tree
         if index != entries_count - 1:
             prefix += PIPE_PREFIX
         else:
             prefix += SPACE_PREFIX
         self._tree_body(dir=directory, prefix=prefix)
         self._tree.append(prefix.rstrip())
-        
+    
+    # Add the file to the tree
     def _add_file(self, file, prefix, connector):
         self._tree.append(f"{prefix}{connector} {file.name}")
