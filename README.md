@@ -27,13 +27,13 @@ python tree.py [OPTIONS] ROOT_DIR
 Generate a full tree from the current directory:
 
 ```sh
-python tree.py .
+python tree.py
 ```
 
 Generate a directory-only tree and save it to a file:
 
 ```sh
-python tree.py -d -o tree.txt .
+python tree.py -d -o tree.txt
 ```
 
 ## Future Enhancements
