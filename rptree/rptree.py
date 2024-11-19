@@ -14,8 +14,8 @@ SPACE_PREFIX = "    "
 
 class DirectoryTree:
     # Initialize the class w/ root_dir passed to it
-    def __init__(self, root_dir):
-        self._generator = _TreeGenerator(root_dir)
+    def __init__(self, root_dir, dir_only=False):
+        self._generator = _TreeGenerator(root_dir, dir_only)
         
     # call the build_tree method of the generator from '_TreeGenerator' class
     def generate(self):
@@ -27,8 +27,9 @@ class DirectoryTree:
 class _TreeGenerator:
     
     # Initialize the class w/ root_dir passed to it
-    def __init__(self, root_dir):
+    def __init__(self, root_dir, dir_only=False):
         self.root_dir = pathlib.Path(root_dir)
+        self.dir_only = dir_only
         self._tree = [] # list to store the tree structure
         
     # Build the tree structure
@@ -43,8 +44,7 @@ class _TreeGenerator:
         self._tree.append(PIPE) # append the PIPE to the tree
         
     def _tree_body(self, dir, prefix=""):
-        entries = dir.iterdir() # get the entries in the directory
-        entries = sorted(entries, key=lambda entry: entry.is_file()) # sort the entries
+        entries = self._prepare_entries(dir) # get the entries of the directory
         entries_count = len(entries) # get the count of entries
         for index, entry in enumerate(entries):
             connector = ELBOW if index == entries_count - 1 else TEE # set the connector
@@ -52,6 +52,14 @@ class _TreeGenerator:
                 self._add_directory(entry, index, entries_count, prefix, connector) # add the directory to the tree
             else:
                 self._add_file(entry, prefix, connector) # add the file to the tree
+    
+    def _prepare_entries(self, dir):
+        entries = dir.iterdir() # get the entries of the directory
+        if self.dir_only:
+            entries = [entry for entry in entries if entry.is_dir()]
+            return entries
+        entries = sorted(entries, key=lambda entry: entry.is_file()) # sort the entries
+        return entries                      
     
     # Add the directory to the tree - (note: directory goes to 'dir' in "tree_body" method, bad naming)
     def _add_directory(self, directory, index, entries_count, prefix, connector):
