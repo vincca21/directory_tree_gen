@@ -47,3 +47,5 @@ python tree.py -d -o tree.txt
 - **Export Formats**: Export tree to formats like JSON, XML.
 
 
+### Credit/Source
+- Credit to the guide used to inspire the base project w/ code snippets: https://realpython.com/directory-tree-generator-python/
